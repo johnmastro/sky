@@ -1,0 +1,7 @@
+((c-mode . ((c-file-style . "linux")
+            (indent-tabs-mode . nil)
+            (c-basic-offset . 4)
+            (comment-start . "//")
+            (comment-end . "")))
+ (diff-mode . ((mode . whitespace)))
+ ("src" . ((c-mode . ((compile-command . "make -k -C ../ "))))))
