@@ -11,6 +11,8 @@
 #include <assert.h>
 #include <stdnoreturn.h>
 
+typedef intptr_t value_t;
+
 enum type_tag {
     TAG_NONE = 0,
     TAG_INT,
@@ -26,12 +28,12 @@ struct string {
 };
 
 struct symbol {
-    struct object *name;
+    value_t name;
 };
 
 struct list {
-    struct object *first;
-    struct object *rest;
+    value_t first;
+    value_t rest;
 };
 
 struct object {
@@ -46,25 +48,25 @@ struct object {
     } u;
 };
 
-#define NIL ((struct object *)0)
+#define NIL ((value_t)0)
 
 // Defined in data.c
-enum type_tag get_type_tag(struct object *obj);
+enum type_tag get_type_tag(value_t value);
 struct object *make_object(enum type_tag tag);
-struct object *make_integer(intptr_t value);
-intptr_t integer_data(struct object *obj);
-struct object *make_character(int value);
-int character_data(struct object *obj);
-struct object *make_string(const char *data, ptrdiff_t len);
-ptrdiff_t string_length(struct object *obj);
-const unsigned char *string_data(struct object *obj);
-int string_ref(struct object *obj, ptrdiff_t i);
-struct object *make_symbol(struct object *name);
-struct object *make_symbol_from_c_string(const char *data);
-struct object *symbol_name(struct object *obj);
-struct object *cons(struct object *first, struct object *rest);
-struct object *first(struct object *obj);
-struct object *rest(struct object *obj);
+value_t make_integer(intptr_t value);
+intptr_t integer_data(value_t value);
+value_t make_character(int value);
+int character_data(value_t value);
+value_t make_string(const char *data, ptrdiff_t len);
+ptrdiff_t string_length(value_t value);
+const unsigned char *string_data(value_t value);
+int string_ref(value_t value, ptrdiff_t i);
+value_t make_symbol(value_t name);
+value_t make_symbol_from_c_string(const char *data);
+value_t symbol_name(value_t value);
+value_t cons(value_t first, value_t rest);
+value_t first(value_t value);
+value_t rest(value_t value);
 
 // Defined in error.c
 noreturn void error(const char *format, ...);

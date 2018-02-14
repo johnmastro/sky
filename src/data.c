@@ -2,10 +2,10 @@
 
 #include "sky.h"
 
-enum type_tag get_type_tag(struct object *obj)
+enum type_tag get_type_tag(value_t value)
 {
-    if (obj == NIL) return TAG_LIST;
-    return obj->tag;
+    if (value == NIL) return TAG_LIST;
+    return ((struct object *)value)->tag;
 }
 
 struct object *make_object(enum type_tag tag)
@@ -15,31 +15,31 @@ struct object *make_object(enum type_tag tag)
     return obj;
 }
 
-struct object *make_integer(intptr_t value)
+value_t make_integer(intptr_t value)
 {
     struct object *obj = make_object(TAG_INT);
     obj->u.i = value;
-    return obj;
+    return (value_t)obj;
 }
 
-intptr_t integer_data(struct object *obj)
+intptr_t integer_data(value_t value)
 {
-    return obj->u.i;
+    return ((struct object *)value)->u.i;
 }
 
-struct object *make_character(int value)
+value_t make_character(int value)
 {
     struct object *obj = make_object(TAG_CHAR);
     obj->u.c = value;
-    return obj;
+    return (value_t)obj;
 }
 
-int character_data(struct object *obj)
+int character_data(value_t value)
 {
-    return obj->u.c;
+    return ((struct object *)value)->u.c;
 }
 
-struct object *make_string(const char *data, ptrdiff_t len)
+value_t make_string(const char *data, ptrdiff_t len)
 {
     assert(len >= 0);
     assert(len != PTRDIFF_MAX);
@@ -48,61 +48,61 @@ struct object *make_string(const char *data, ptrdiff_t len)
     obj->u.string.data = xmalloc(len + 1);
     memcpy(obj->u.string.data, data, len);
     obj->u.string.data[len] = '\0';
-    return obj;
+    return (value_t)obj;
 }
 
-ptrdiff_t string_length(struct object *obj)
+ptrdiff_t string_length(value_t value)
 {
-    return obj->u.string.len;
+    return ((struct object *)value)->u.string.len;
 }
 
-const unsigned char *string_data(struct object *obj)
+const unsigned char *string_data(value_t value)
 {
-    return obj->u.string.data;
+    return ((struct object *)value)->u.string.data;
 }
 
-int string_ref(struct object *obj, ptrdiff_t i)
+int string_ref(value_t value, ptrdiff_t i)
 {
-    const unsigned char *data = string_data(obj);
+    const unsigned char *data = string_data(value);
     return data[i];
 }
 
-struct object *make_symbol(struct object *name)
+value_t make_symbol(value_t name)
 {
     assert(get_type_tag(name) == TAG_STRING);
     struct object *obj = make_object(TAG_SYMBOL);
     obj->u.symbol.name = name;
-    return obj;
+    return (value_t)obj;
 }
 
-struct object *make_symbol_from_c_string(const char *data)
+value_t make_symbol_from_c_string(const char *data)
 {
     size_t len = strlen(data);
     assert(len < (size_t)PTRDIFF_MAX);
-    struct object *name = make_string(data, len);
+    value_t name = make_string(data, len);
     return make_symbol(name);
 }
 
-struct object *symbol_name(struct object *obj)
+value_t symbol_name(value_t value)
 {
-    return obj->u.symbol.name;
+    return ((struct object *)value)->u.symbol.name;
 }
 
-struct object *cons(struct object *first, struct object *rest)
+value_t cons(value_t first, value_t rest)
 {
     assert(get_type_tag(rest) == TAG_LIST);
     struct object *obj = make_object(TAG_LIST);
     obj->u.list.first = first;
     obj->u.list.rest = rest;
-    return obj;
+    return (value_t)obj;
 }
 
-struct object *first(struct object *obj)
+value_t first(value_t value)
 {
-    return obj->u.list.first;
+    return ((struct object *)value)->u.list.first;
 }
 
-struct object *rest(struct object *obj)
+value_t rest(value_t value)
 {
-    return obj->u.list.rest;
+    return ((struct object *)value)->u.list.rest;
 }

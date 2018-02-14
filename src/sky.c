@@ -4,7 +4,7 @@
 
 static void check_constructors_and_accessors(void)
 {
-    struct object *integer, *character, *string, *symbol, *list;
+    value_t integer, character, string, symbol, list;
     ptrdiff_t i = 100;
     int c = 'a';
     const char str[] = "stuff";
