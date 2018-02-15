@@ -77,7 +77,6 @@ struct object {
 
 // Defined in data.c
 enum type_tag get_type_tag(value_t value);
-struct object *make_object(enum type_tag tag);
 value_t make_integer(intptr_t value);
 intptr_t integer_data(value_t value);
 value_t make_character(int value);

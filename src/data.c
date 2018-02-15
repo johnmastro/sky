@@ -15,7 +15,7 @@ enum type_tag get_type_tag(value_t value)
     return tag;
 }
 
-struct object *make_object(enum type_tag tag)
+static struct object *make_object(enum type_tag tag)
 {
     struct object *obj = xmalloc(sizeof(*obj));
     obj->tag = tag;
