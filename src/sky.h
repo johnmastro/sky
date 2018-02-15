@@ -5,8 +5,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <inttypes.h>
 #include <limits.h>
+#include <ctype.h>
 #include <string.h>
 #include <assert.h>
 #include <stdnoreturn.h>
@@ -99,3 +101,7 @@ noreturn void error(const char *format, ...);
 void *xmalloc(size_t size);
 void *xcalloc(size_t count, size_t size);
 void *xrealloc(void *ptr, size_t size);
+
+// Defined in print.c
+void print(FILE *stream, value_t value);
+void println(FILE *stream, value_t value);
