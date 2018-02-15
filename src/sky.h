@@ -13,10 +13,34 @@
 
 typedef intptr_t value_t;
 
+/*
+ * Pointer tags
+ *
+ * If the two least significant bits of a `value_t` are non-zero, they represent
+ * the type tag of an immediate value. The value is obtained by shifting the
+ * `value_t` two places right to remove the tag.
+ *
+ * Otherwise, the `value_t` is a pointer to a heap-allocated `struct object`.
+ *
+ * | Binary | Decimal | Type      |
+ * |--------+---------+-----------|
+ * |     00 |       0 | Pointer   |
+ * |     01 |       1 | Integer   |
+ * |     10 |       2 | Character |
+ * |     11 |       3 | Unused    |
+ *
+ */
+
+#define TAG_BITS 2
+#define PTR_BITS (sizeof(intptr_t) * CHAR_BIT)
+#define VAL_BITS (PTR_BITS - TAG_BITS)
+#define VAL_MASK (-(1 << TAG_BITS))
+
 enum type_tag {
     TAG_NONE = 0,
     TAG_INT,
     TAG_CHAR,
+    TAG_UNUSED,
     TAG_STRING,
     TAG_SYMBOL,
     TAG_LIST
@@ -40,8 +64,6 @@ struct object {
     enum type_tag tag;
 
     union {
-        intptr_t i;
-        int c;
         struct string string;
         struct symbol symbol;
         struct list list;
@@ -49,6 +71,9 @@ struct object {
 };
 
 #define NIL ((value_t)0)
+
+#define MOST_POSITIVE_INT (INTPTR_MAX >> TAG_BITS)
+#define MOST_NEGATIVE_INT (-1 - MOST_POSITIVE_INT)
 
 // Defined in data.c
 enum type_tag get_type_tag(value_t value);

@@ -5,7 +5,14 @@
 enum type_tag get_type_tag(value_t value)
 {
     if (value == NIL) return TAG_LIST;
-    return ((struct object *)value)->tag;
+
+    enum type_tag tag = value & ~VAL_MASK;
+
+    if (!tag)
+        tag = ((struct object *)value)->tag;
+
+    assert(tag != TAG_UNUSED);
+    return tag;
 }
 
 struct object *make_object(enum type_tag tag)
@@ -17,26 +24,22 @@ struct object *make_object(enum type_tag tag)
 
 value_t make_integer(intptr_t value)
 {
-    struct object *obj = make_object(TAG_INT);
-    obj->u.i = value;
-    return (value_t)obj;
+    return ((uintptr_t)value << TAG_BITS) + TAG_INT;
 }
 
 intptr_t integer_data(value_t value)
 {
-    return ((struct object *)value)->u.i;
+    return value >> TAG_BITS;
 }
 
 value_t make_character(int value)
 {
-    struct object *obj = make_object(TAG_CHAR);
-    obj->u.c = value;
-    return (value_t)obj;
+    return ((uintptr_t)value << TAG_BITS) + TAG_CHAR;
 }
 
 int character_data(value_t value)
 {
-    return ((struct object *)value)->u.c;
+    return value >> TAG_BITS;
 }
 
 value_t make_string(const char *data, ptrdiff_t len)
