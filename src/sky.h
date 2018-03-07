@@ -112,3 +112,6 @@ void println(FILE *stream, value_t value);
 
 // Defined in equal.c
 bool equal(value_t v0, value_t v1);
+
+// Defined in hash.c
+uintptr_t hash(value_t value);
