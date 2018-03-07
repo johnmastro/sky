@@ -102,6 +102,10 @@ void *xmalloc(size_t size);
 void *xcalloc(size_t count, size_t size);
 void *xrealloc(void *ptr, size_t size);
 
+// Defined in read.c
+value_t read_from_stream(FILE *stream, bool *eof);
+value_t read_from_file(const char *filename, bool *eof);
+
 // Defined in print.c
 void print(FILE *stream, value_t value);
 void println(FILE *stream, value_t value);
