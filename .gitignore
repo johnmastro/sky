@@ -1,3 +1,4 @@
 /src/sky
 *.o
 TAGS
+/tst/data/*.out

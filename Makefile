@@ -22,12 +22,15 @@ all: $(NAME)
 $(NAME): $(objects)
 	$(CC) $(LDFLAGS) -o src/$@ $(objects) $(LDLIBS)
 
+check:
+	@tst/run.sh || (echo "Tests failed" && exit 1)
+
 clean:
-	$(RM) src/*.o src/$(NAME)
+	$(RM) src/*.o src/$(NAME) tst/data/*.out
 
 tags:
 	etags $(sources) $(headers)
 
 TAGS: tags
 
-.PHONY: clean tags TAGS
+.PHONY: clean check tags TAGS
