@@ -109,3 +109,6 @@ value_t read_from_file(const char *filename, bool *eof);
 // Defined in print.c
 void print(FILE *stream, value_t value);
 void println(FILE *stream, value_t value);
+
+// Defined in equal.c
+bool equal(value_t v0, value_t v1);
