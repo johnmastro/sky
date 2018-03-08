@@ -284,6 +284,33 @@ static value_t read_list(FILE *stream)
     return list;
 }
 
+static value_t read_sharp(FILE *stream)
+{
+    int c = getc(stream);
+    if (c == '\\')
+        return read_character(stream);
+
+    ungetc(c, stream);
+
+    char buf[READ_ATOM_BUFSZ];
+    int len = read_token(stream, buf, READ_ATOM_BUFSZ, false);
+
+    if (len < 0)
+        error("Token too long");
+
+    if (TOKEQ(buf, len, "symbol")) {
+        int flag;
+        value_t sexp = read_sexp(stream, 0, &flag);
+        if (flag == EOF)
+            error("EOF while reading");
+        if (get_type_tag(sexp) == TAG_STRING)
+            return make_symbol(sexp);
+        error("Expression following #symbol must be a string");
+    }
+
+    error("Invalid read syntax: #%s", buf);
+}
+
 static value_t read_sexp(FILE *stream, int sentinel, int *flag)
 {
     int c = read_next_char(stream);
@@ -298,12 +325,8 @@ static value_t read_sexp(FILE *stream, int sentinel, int *flag)
     switch(c) {
     case '(': return read_list(stream);
     case '"': return read_string(stream);
+    case '#': return read_sharp(stream);
     case ')': error("Unmatched delimiter while reading: %c", c);
-    case '#':
-        c = getc(stream);
-        if (c == '\\')
-            return read_character(stream);
-        error("Invalid read syntax: #%c", c);
     case EOF:
         *flag = c;
         return NIL;

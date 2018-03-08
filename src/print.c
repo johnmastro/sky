@@ -31,9 +31,38 @@ static void print_character(FILE *stream, value_t value)
     }
 }
 
+static bool quotename(value_t name, ptrdiff_t len)
+{
+    bool intlike = true;
+
+    if (len == 0) return true;
+
+    for (ptrdiff_t i = 0; i < len; i++) {
+        int c = string_ref(name, i);
+        if (c < '!'     // Control and whitespace characters
+            || c > '~'  // DEL
+            || c == '(' || c == ')'
+            || c == '"'
+            || c == ';'
+            || (i == 0 && c == '#'))
+            return true;
+        if (intlike
+            && !((i == 0 && (c == '-' || c == '+'))
+                 || (c >= '0' && c <= '9')))
+            intlike = false;
+    }
+
+    return intlike;
+}
+
 static void print_string_1(FILE *stream, value_t value, bool symbol)
 {
     ptrdiff_t len = string_length(value);
+
+    if (symbol && quotename(value, len)) {
+        fputs("#symbol ", stream);
+        symbol = false;
+    }
 
     if (!symbol) putc('"', stream);
 
