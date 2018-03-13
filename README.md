@@ -5,6 +5,10 @@ not intended for practical use.
 
 [Lisp]: https://en.wikipedia.org/wiki/Lisp_(programming_language)
 
+I'm writing [a series of blog posts][blog] about developing Sky.
+
+[blog]: https://jbm.io/sky.html
+
 ## Prerequisites
 
 A [POSIX][]-like environment, [GNU Make][], and a [C][] compiler that supports
