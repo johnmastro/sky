@@ -21,9 +21,29 @@ static void read_and_print(const char *in, const char *out)
     read_and_print_1(infile, outfile);
 }
 
+static void run_repl(void)
+{
+    value_t value;
+    bool eof = false;
+
+    fputs("Welcome to Sky. Use control-c to exit.\n", stdout);
+
+    for (;;) {
+        fprintf(stdout, "> ");
+        fflush(stdout);
+        value = read_from_stream(stdin, &eof);
+        if (eof) break;
+        println(stdout, value);
+    }
+
+    fputs("\nGoodbye\n", stdout);
+}
+
 int main(int argc, const char *argv[])
 {
-    if (argc == 2) {
+    if (argc == 1) {
+        run_repl();
+    } else if (argc == 2) {
         const char *arg = argv[1];
         read_and_print((arg[0] == '-' && arg[1] == '\0' ? NULL : arg),
                        NULL);
