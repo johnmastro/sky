@@ -115,3 +115,17 @@ bool equal(value_t v0, value_t v1);
 
 // Defined in hash.c
 uintptr_t hash(value_t value);
+
+// Defined in symtbl.c
+struct symtbl {
+    size_t size;
+    size_t count;
+    value_t *keys;
+    value_t *vals;
+};
+
+struct symtbl *make_symtbl(void);
+void symtbl_resize(struct symtbl *table, size_t size);
+void symtbl_set(struct symtbl *table, value_t key, value_t val);
+value_t symtbl_ref(struct symtbl *table, value_t key);
+bool symtbl_del(struct symtbl *table, value_t key);
